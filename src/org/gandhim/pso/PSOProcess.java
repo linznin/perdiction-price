@@ -60,32 +60,38 @@ class PSOProcess implements PSOConstants {
 			for(int i=0; i<SWARM_SIZE; i++) {
 				double r1 = generator.nextDouble();
 				double r2 = generator.nextDouble();
-				
+                double randid = generator.nextDouble();
+
 				Particle p = swarm.get(i);
 				
                 //update velocity & location
-				int[] newVel = new int[PROBLEM_DIMENSION];
-                int[] newLoc = new int[PROBLEM_DIMENSION];
-				// TODO: 2016/11/15 四捨五入
+				double[] newVel = new double[PROBLEM_DIMENSION];
+                boolean[] newLoc = new boolean[PROBLEM_DIMENSION];
+
                 for (int j = 0; j < PROBLEM_DIMENSION; j++) {
                     //get new velocity
-                    newVel[j] = (int)((w * p.getVelocity().getPos()[j]) +
-                                (r1 * C1) * (pBestLocation.get(i).getLoc()[j] - p.getLocation().getLoc()[j]) +
-                                (r2 * C2) * (gBestLocation.getLoc()[j] - p.getLocation().getLoc()[j]));
+                    newVel[j] = (w * p.getVelocity().getPos()[j]) +
+                                (r1 * C1) * ((pBestLocation.get(i).getLoc()[j])?1:0) - (p.getLocation().getLoc()[j]?1:0) +
+                                (r2 * C2) * ((gBestLocation.getLoc()[j]?1:0) - (p.getLocation().getLoc()[j]?1:0));
                     //limit Velocity
-                    if (newVel[j] > ProblemSet.VEL_HIGH){
-                        newVel[j] = ProblemSet.VEL_HIGH;
-                    } else if (newVel[j] < ProblemSet.VEL_LOW){
-                        newVel[j] = ProblemSet.VEL_LOW;
-                    }
+//                    if (newVel[j] > ProblemSet.VEL_HIGH){
+//                        newVel[j] = ProblemSet.VEL_HIGH;
+//                    } else if (newVel[j] < ProblemSet.VEL_LOW){
+//                        newVel[j] = ProblemSet.VEL_LOW;
+//                    }
                     //get new location
-                    newLoc[j] = p.getLocation().getLoc()[j] + newVel[j];
-                    //limit Location
-                    if (newLoc[j] > ProblemSet.LOC_HIGH[j]){
-                        newLoc[j] = ProblemSet.LOC_HIGH[j];
-                    } else if (newLoc[j] < ProblemSet.LOC_LOW[j]){
-                        newLoc[j] = ProblemSet.LOC_LOW[j];
+                    if (randid < PSOUtility.sigmoid(newVel[j])){
+                        newLoc[j] = true;
+                    } else {
+                        newLoc[j] = false;
                     }
+                    //newLoc[j] = p.getLocation().getLoc()[j] + newVel[j];
+                    //limit Location
+//                    if (newLoc[j] > ProblemSet.LOC_HIGH[j]){
+//                        newLoc[j] = ProblemSet.LOC_HIGH[j];
+//                    } else if (newLoc[j] < ProblemSet.LOC_LOW[j]){
+//                        newLoc[j] = ProblemSet.LOC_LOW[j];
+//                    }
                 }
 
                 // step 3 - update velocity
@@ -122,15 +128,15 @@ class PSOProcess implements PSOConstants {
 		for(int i=0; i<SWARM_SIZE; i++) {
 			p = new Particle();
 			
-			int[] loc = new int[PROBLEM_DIMENSION];
-            int[] vel = new int[PROBLEM_DIMENSION];
-			// TODO: 2016/11/15 四捨五入
+			boolean[] loc = new boolean[PROBLEM_DIMENSION];
+            double[] vel = new double[PROBLEM_DIMENSION];
+
             for (int j = 0; j < PROBLEM_DIMENSION; j++) {
                 // randomize location inside a space defined in Problem Set
-                loc[j] = (int)(ProblemSet.LOC_LOW[j] + generator.nextDouble() * (ProblemSet.LOC_HIGH[j] - ProblemSet.LOC_LOW[j]));
+                loc[j] = Math.random() < 0.5;
 
                 // randomize velocity in the range defined in Problem Set
-                vel[j] = (int)(ProblemSet.VEL_LOW + generator.nextDouble() * (ProblemSet.VEL_HIGH - ProblemSet.VEL_LOW));
+                vel[j] = Math.random();
             }
 			Location location = new Location(loc);
 			Velocity velocity = new Velocity(vel);

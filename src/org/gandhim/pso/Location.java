@@ -6,18 +6,18 @@ package org.gandhim.pso;
 
 public class Location {
 	// store the Location in an array to accommodate multi-dimensional problem space
-	private int[] loc;//[x,y,......]
+	private boolean[] loc;//[x,y,......]
 
-	public Location(int[] loc) {
+	public Location(boolean[] loc) {
 		super();
 		this.loc = loc;
 	}
 
-	public int[] getLoc() {
+	public boolean[] getLoc() {
 		return loc;
 	}
 
-	public void setLoc(int[] loc) {
+	public void setLoc(boolean[] loc) {
 		this.loc = loc;
 	}
 	

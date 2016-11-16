@@ -40,7 +40,7 @@ public class ProblemSet {
 
 	//http://blog.csdn.net/yangliuy/article/details/8041343
 	//for libsvm
-	public static double executeSVM(char[] c){
+	public static double executeSVM(boolean[] c){
 		double accuracy = 0;
 		String trainData = perpareData(c);
 		//svm_train:
@@ -75,8 +75,8 @@ public class ProblemSet {
 	}
 
 	public static double evaluate(Location location) {
-		int[] local = location.getLoc(); // the location
-		double result = executeSVM(decode(local[0]));
+		boolean[] local = location.getLoc(); // the location
+		double result = executeSVM(local);
 		return result;
 	}
 
@@ -93,7 +93,7 @@ public class ProblemSet {
 		return i;
 	}
 
-	private static String perpareData(char[] c){
+	private static String perpareData(boolean[] c){
 		//給予features 最大特徵數
 		boolean[] features = new boolean[TOTLE_FEATURE];
 		//將 features 大於解碼c 之位元數補上不選擇
@@ -102,11 +102,7 @@ public class ProblemSet {
 		}
 		//依照解碼後c 給予features 選取與否
 		for (int i = 0 ;i< c.length;i++){
-			if (c[i]=='1'){
-				features[TOTLE_FEATURE -c.length+i] = true;
-			} else {
-				features[TOTLE_FEATURE -c.length+i] = false;
-			}
+            features[TOTLE_FEATURE -c.length+i] = c[i];
 		}
 		//回傳測試資料檔名稱
 		return makeTrainData(features);

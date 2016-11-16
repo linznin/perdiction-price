@@ -8,7 +8,7 @@ package org.gandhim.pso;
 public interface PSOConstants {
 	int SWARM_SIZE = 10;
 	int MAX_ITERATION = 10;
-	int PROBLEM_DIMENSION = 1;
+	int PROBLEM_DIMENSION = 13;
 	double C1 = 2;
 	double C2 = 2;
 	double W_UPPERBOUND = 1.0;
