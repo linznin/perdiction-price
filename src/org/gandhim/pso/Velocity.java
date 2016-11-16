@@ -6,18 +6,18 @@ package org.gandhim.pso;
 
 public class Velocity {
 	// store the Velocity in an array to accommodate multi-dimensional problem space
-	private double[] vel;
+	private int[] vel;
 
-	public Velocity(double[] vel) {
+	public Velocity(int[] vel) {
 		super();
 		this.vel = vel;
 	}
 
-	public double[] getPos() {
+	public int[] getPos() {
 		return vel;
 	}
 
-	public void setPos(double[] vel) {
+	public void setPos(int[] vel) {
 		this.vel = vel;
 	}
 	

@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
+import java.util.UUID;
 
 /* author: gandhi - gandhi.mtm [at] gmail [dot] com - Depok, Indonesia */
 
@@ -20,12 +22,10 @@ import java.io.PrintWriter;
 // you need to introduce a new variable (other than x and y)
 
 public class ProblemSet {
-	public static final double LOC_X_LOW = 1;	//x 最小
-	public static final double LOC_X_HIGH = 4;	//x 最大
-	public static final double LOC_Y_LOW = -1;	//y 最小
-	public static final double LOC_Y_HIGH = 1;	//y 最大
-	public static final double VEL_LOW = -1;	//最小速度
-	public static final double VEL_HIGH = 1;	//最大速度
+	public static final int[] LOC_HIGH = {1<<13};
+	public static final int[] LOC_LOW = {1};
+	public static final int VEL_LOW = -1<<5;	//最小速度
+	public static final int VEL_HIGH = 1<<5;	//最大速度
 	
 	public static final double ERR_TOLERANCE = 1E-20; // the smaller the tolerance, the more accurate the result, 
 	                                                  // but the number of iteration is increased   
@@ -34,30 +34,32 @@ public class ProblemSet {
 	public static final String ORG_PATH = "/Users/linznin/tmp/";
 	public  static final String ORG_DATA = "heart_scale";
 
+    public static final String gamma = "0.001953125";
+    public static final String cost = "512.0";
+    public static final String nr_fold = "10";
+
 	//http://blog.csdn.net/yangliuy/article/details/8041343
 	//for libsvm
 	public static double executeSVM(char[] c){
-		double result = 0;
-		String trainData = perpareData(decode(2047));
-
+		double accuracy = 0;
+		String trainData = perpareData(c);
 		//svm_train:
 		//    param: String[], parse result of command line parameter of svm-train
 		//    return: String, the directory of modelFile
 		//svm_predect:
 		//    param: String[], parse result of command line parameter of svm-predict, including the modelfile
 		//    return: Double, the accuracy of SVM classification
-		Double accuracy = null;
 		try {
-
-			//directory of training file
-			String[] trainArgs = {ORG_PATH+trainData};
+            //svmtrain [options] training_set_file [model_file]
+			//directory of -g gamma, -c cost,/*-v nr_fold,*/ training file, model file
+			String[] trainArgs = {"-g",gamma,"-c",cost,ORG_PATH+trainData,ORG_PATH+trainData+".model"};
 			String modelFile = svm_train.main(trainArgs);
 
+            //svmpredict test_file model_file output_file
 			//directory of test file, model file, result file
-			String[] testArgs = {ORG_PATH+ORG_DATA, modelFile, ORG_PATH+ORG_DATA+"_reslut"};
-
-
+			String[] testArgs = {ORG_PATH+ORG_DATA, modelFile, ORG_PATH+trainData+"_reslut"};
 			accuracy = svm_predict.main(testArgs);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -69,18 +71,12 @@ public class ProblemSet {
 		//System.out.print("Cross validation is done! The modelFile is " + modelFile);
 
 
-		return result;
+		return accuracy;
 	}
 
 	public static double evaluate(Location location) {
-		double result = 0;
-		double x = location.getLoc()[0]; // the "x" part of the location
-		double y = location.getLoc()[1]; // the "y" part of the location
-		
-		result = Math.pow(2.8125 - x + x * Math.pow(y, 4), 2) + 
-				Math.pow(2.25 - x + x * Math.pow(y, 2), 2) + 
-				Math.pow(1.5 - x + x * y, 2);
-		
+		int[] local = location.getLoc(); // the location
+		double result = executeSVM(decode(local[0]));
 		return result;
 	}
 
@@ -118,11 +114,13 @@ public class ProblemSet {
 
 	private static String makeTrainData(boolean[] features){
 		// 測試資料格式 <class> <lable>:<value> <lable>:<value>
-		String trainData = ORG_DATA+"_tring_data";
+		UUID uuid = UUID.randomUUID();
+		long time  = new Date().getTime();
+		String trainData = ORG_DATA+"_tring_"+uuid+"_"+time;
 		try (BufferedReader br = new BufferedReader(new FileReader(ORG_PATH+ORG_DATA)))
 		{
 			String rowData = "";
-			PrintWriter writer = new PrintWriter(ORG_PATH.concat(trainData), "UTF-8");
+			PrintWriter writer = new PrintWriter(ORG_PATH+trainData, "UTF-8");
 			//依行讀入資料
 			while (br.readLine() != null) {
 				//依照空白分割 lable
