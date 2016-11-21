@@ -13,4 +13,5 @@ public interface PSOConstants {
 	double C2 = 2;
 	double W_UPPERBOUND = 1.0;
 	double W_LOWERBOUND = 0.8;
+	String ORG_PATH = "/Users/linznin/tmp/data/";
 }

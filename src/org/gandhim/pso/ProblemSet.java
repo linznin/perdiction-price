@@ -21,7 +21,7 @@ import java.util.UUID;
 // if your problem space is greater than 2-dimensional space
 // you need to introduce a new variable (other than x and y)
 
-public class ProblemSet {
+public class ProblemSet implements PSOConstants{
 	public static final int[] LOC_HIGH = {1<<13};
 	public static final int[] LOC_LOW = {1};
 	public static final int VEL_LOW = -1<<5;	//最小速度
@@ -31,7 +31,6 @@ public class ProblemSet {
 	                                                  // but the number of iteration is increased   
 													  //最小誤差
 	public  static final int TOTLE_FEATURE = 13;
-	public static final String ORG_PATH = "/Users/linznin/tmp/";
 	public  static final String ORG_DATA = "heart_scale";
 
     public static final String gamma = "0.001953125";
@@ -51,13 +50,13 @@ public class ProblemSet {
 		//    return: Double, the accuracy of SVM classification
 		try {
             //svmtrain [options] training_set_file [model_file]
-			//directory of -g gamma, -c cost,/*-v nr_fold,*/ training file, model file
+			//directory of -g gamma, -c cost,/* -v nr_fold,*/ training file, model file
 			String[] trainArgs = {"-g",gamma,"-c",cost,ORG_PATH+trainData,ORG_PATH+trainData+".model"};
 			String modelFile = svm_train.main(trainArgs);
 
             //svmpredict test_file model_file output_file
 			//directory of test file, model file, result file
-			String[] testArgs = {ORG_PATH+ORG_DATA, modelFile, ORG_PATH+trainData+"_reslut"};
+			String[] testArgs = {ORG_PATH+trainData, modelFile, ORG_PATH+trainData+"_reslut"};
 			accuracy = svm_predict.main(testArgs);
 
 		} catch (IOException e) {
@@ -131,7 +130,7 @@ public class ProblemSet {
 						rowData += " "+row[i];
 					}
 				}
-				System.out.println(rowData);
+				//System.out.println(rowData);
 				writer.println(rowData);
 			}
 			writer.flush();
@@ -141,5 +140,8 @@ public class ProblemSet {
 		}
 
 		return trainData;
+	}
+	private static boolean featureDecode(){
+		return true;
 	}
 }
