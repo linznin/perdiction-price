@@ -13,6 +13,7 @@ public class svm_train {
 	private String error_msg;
 	private int cross_validation;
 	private int nr_fold;
+	private double accuracy;
 
 	private static svm_print_interface svm_print_null = new svm_print_interface()
 	{
@@ -53,13 +54,14 @@ public class svm_train {
 		System.exit(1);
 	}
 
-	private void do_cross_validation()
+	private double do_cross_validation()
 	{
 		int i;
 		int total_correct = 0;
 		double total_error = 0;
 		double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
-		double[] target = new double[prob.l];
+		double result = 0.0;
+		double[] target = new double[prob.l+1];
 
 		svm.svm_cross_validation(prob,param,nr_fold,target);
 		if(param.svm_type == svm_parameter.EPSILON_SVR ||
@@ -84,14 +86,19 @@ public class svm_train {
 		}
 		else
 		{
-			for(i=0;i<prob.l;i++)
-				if(target[i] == prob.y[i])
+			for(i=0;i<prob.l;i++){
+				if(target[i] == prob.y[i]){
 					++total_correct;
+				}
+			}
+
+			result = (double) total_correct/(double) prob.l;
 			System.out.print("Cross Validation Accuracy = "+100.0*total_correct/prob.l+"%\n");
 		}
+		return result;
 	}
 	
-	private void run(String argv[]) throws IOException
+	private String run(String argv[]) throws IOException
 	{
 		parse_command_line(argv);
 		read_problem();
@@ -105,20 +112,22 @@ public class svm_train {
 
 		if(cross_validation != 0)
 		{
-			do_cross_validation();
+			return ""+do_cross_validation();
 		}
 		else
 		{
 			model = svm.svm_train(prob,param);
 			svm.svm_save_model(model_file_name,model);
+			return  model_file_name;
 		}
 	}
 
 	public static String main(String argv[]) throws IOException
 	{
 		svm_train t = new svm_train();
-		t.run(argv);
-		return model_file_name;
+//		t.run(argv);
+//		return model_file_name;
+		return t.run(argv);
 	}
 
 	private static double atof(String s)

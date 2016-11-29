@@ -6,12 +6,14 @@ package org.gandhim.pso;
 // you can modify the value depends on your needs
 
 public interface PSOConstants {
-	int SWARM_SIZE = 10;
-	int MAX_ITERATION = 10;
-	int PROBLEM_DIMENSION = 13;
+	int SWARM_SIZE = 20;
+	int MAX_ITERATION = 100;
+	int PROBLEM_DIMENSION = 30;
 	double C1 = 2;
 	double C2 = 2;
-	double W_UPPERBOUND = 1.0;
-	double W_LOWERBOUND = 0.8;
+	double W_UPPERBOUND = 0.9;
+	double W_LOWERBOUND = 0.4;
+	double W = 0.8;
 	String ORG_PATH = "/Users/linznin/tmp/data/";
+	String ORG_DATA = "food_30_1d";
 }
