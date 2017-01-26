@@ -12,11 +12,11 @@ import java.io.PrintWriter;
  */
 public class CsvFile implements PSOConstants {
 
-    public String genRowData(String fileName){
-        try (BufferedReader br = new BufferedReader(new FileReader(ORG_PATH+fileName)))
+    public String genRowData(String path,String fileName){
+        try (BufferedReader br = new BufferedReader(new FileReader(path+fileName)))
         {
             String rowData = "";
-            PrintWriter writer = new PrintWriter(ORG_PATH+fileName+"train", "UTF-8");
+            PrintWriter writer = new PrintWriter(path+fileName+"train", "UTF-8");
             //依行讀入資料
             String line = "";
             while ((line = br.readLine()) != null) {

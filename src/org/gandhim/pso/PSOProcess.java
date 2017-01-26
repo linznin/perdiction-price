@@ -6,7 +6,12 @@ package org.gandhim.pso;
 // the code is for 2-dimensional space problem
 // but you can easily modify it to solve higher dimensional space problem
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
 
@@ -14,48 +19,34 @@ class PSOProcess implements PSOConstants {
 	private Vector<Particle> swarm = new Vector<>();
 	private double[] pBest = new double[SWARM_SIZE];
 	private Vector<Location> pBestLocation = new Vector<>();
-	private double gBest;
+	private double gBest = 0;
 	private Location gBestLocation;
 	private double[] fitnessValueList = new double[SWARM_SIZE];
 	private int locationSize = PROBLEM_DIMENSION+2;
-	
+	private long time1, time2;
 	private Random generator = new Random();
 
-	private double accuracy = 0;
+//	private double accuracy = 0;
 	
 	void execute() {
+		time1 = System.currentTimeMillis();
+
         //族群初始化
 		initializeSwarm();
 		updateFitnessList();
-		
 		for(int i=0; i<SWARM_SIZE; i++) {
 			pBest[i] = fitnessValueList[i];
 			pBestLocation.add(swarm.get(i).getLocation());
 		}
-		
+
+		updateBestFitness();
 		int t = 0;
 		double w;
+		int limit = 0;
 		//double err = 9999;
 
 		//終止條件   最大疊代數 及 最小誤差
-		//while(t < MAX_ITERATION && err > ProblemSet.ERR_TOLERANCE) {
-		while (t < MAX_ITERATION && accuracy < ProblemSet.ERR_TOLERANCE){
-			//更新最佳值
-
-            // step 1 - update pBest
-			for(int i=0; i<SWARM_SIZE; i++) {
-				if(fitnessValueList[i] > pBest[i]) {
-					pBest[i] = fitnessValueList[i];
-					pBestLocation.set(i, swarm.get(i).getLocation());
-				}
-			}
-				
-			// step 2 - update gBest
-			int bestParticleIndex = PSOUtility.getMaxPos(fitnessValueList);
-			if(t == 0 || fitnessValueList[bestParticleIndex] > gBest) {
-				gBest = fitnessValueList[bestParticleIndex];
-				gBestLocation = swarm.get(bestParticleIndex).getLocation();
-			}
+		while (t < MAX_ITERATION && gBest < ProblemSet.ERR_TOLERANCE && limit < LIMIT_ERR){
 
 			//權重遞減	
 //			w = W_UPPERBOUND - (((double) t) / MAX_ITERATION) * (W_UPPERBOUND - W_LOWERBOUND);
@@ -119,20 +110,49 @@ class PSOProcess implements PSOConstants {
                 fitnessValueList[i] = fitnessValue;
             }
 
-			accuracy = ProblemSet.evaluate(gBestLocation);
-
-
+			//更新最佳值
+			if ( updateBestFitness() ) {
+				limit = 0;
+			} else {
+				limit++;
+			}
+			
 			System.out.println("ITERATION " + t + ": ");
 			System.out.println("     Best : " + Arrays.toString(gBestLocation.getLoc()));
-			System.out.println("     Value: " + accuracy);
+			System.out.println("     Value: " + gBest);
 			
 			t++;
 		}
+		time2 = System.currentTimeMillis();
 
 		System.out.println("\nSolution found at iteration " + (t - 1) + ", the solutions is:");
 		System.out.println("     Best : " + Arrays.toString(gBestLocation.getLoc()));
+		System.out.println("	 Value : "+gBest);
+		System.out.println("	 Execute Time：" + (time2-time1)/1000 + " s");
+		recordResult(""+gBest,Arrays.toString(gBestLocation.getLoc()),(time2-time1)/1000);
 	}
-	
+
+	private boolean updateBestFitness() {
+		boolean isUpdate = false;
+		// step 1 - update pBest
+		for(int i=0; i<SWARM_SIZE; i++) {
+			if(fitnessValueList[i] > pBest[i]) {
+				pBest[i] = fitnessValueList[i];
+				pBestLocation.set(i, swarm.get(i).getLocation());
+			}
+		}
+
+		// step 2 - update gBest
+		int bestParticleIndex = PSOUtility.getMaxPos(fitnessValueList);
+		if(fitnessValueList[bestParticleIndex] > gBest) {
+			gBest = fitnessValueList[bestParticleIndex];
+			gBestLocation = swarm.get(bestParticleIndex).getLocation();
+			isUpdate = true;
+		}
+
+		return isUpdate;
+	}
+
 	private void initializeSwarm() {
 		Particle p;
 		for(int i=0; i<SWARM_SIZE; i++) {
@@ -166,9 +186,7 @@ class PSOProcess implements PSOConstants {
 					} else {
 						loc[j] = 1;
 					}
-
 				}
-
             }
 			Location location = new Location(loc);
 			Velocity velocity = new Velocity(vel);
@@ -185,6 +203,23 @@ class PSOProcess implements PSOConstants {
             double fitnessValue = ProblemSet.evaluate(p.getLocation());
             p.setFitnessValue(fitnessValue);
             fitnessValueList[i] = fitnessValue;
+		}
+	}
+
+
+	private static void recordResult(String gBest,String location, Long time){
+		try (PrintWriter writer = new PrintWriter(ORG_PATH+RESULT_FILE, "UTF-8"))
+		{
+			writer.println("******************************************************");
+			writer.println("Data file : "+ORG_DATA);
+			writer.println("gBest : "+gBest);
+			writer.println("location : "+location);
+			writer.println("time : "+time+" s");
+			writer.println("******************************************************");
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

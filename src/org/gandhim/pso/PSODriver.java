@@ -8,7 +8,7 @@ import org.gandhim.csv.CsvFile;
 
 public class PSODriver {
 	public static void main(String args[]) {
-//		new CsvFile().genRowData("semiconductor_30_5d");
+//		new CsvFile().genRowData("/Users/linznin/tmp/source data/","semiconductor_120_5d");
 		new PSOProcess().execute();
 	}
 }

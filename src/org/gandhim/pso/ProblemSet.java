@@ -3,10 +3,7 @@ package org.gandhim.pso;
 import org.gandhim.svm.svm_predict;
 import org.gandhim.svm.svm_train;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
@@ -25,8 +22,8 @@ import java.util.UUID;
 public class ProblemSet implements PSOConstants{
 	public static final int[] LOC_HIGH = {1,20}; //[gamma ,cost]
 	public static final int[] LOC_LOW = {-20,1};
-	public static final int VEL_LOW = -3;	//最小速度
-	public static final int VEL_HIGH = 3;	//最大速度
+	public static final int VEL_LOW = -5;	//最小速度
+	public static final int VEL_HIGH = 5;	//最大速度
 	
 	public static final double ERR_TOLERANCE = 1; // the smaller the tolerance, the more accurate the result,
 	                                                  // but the number of iteration is increased   
@@ -75,7 +72,14 @@ public class ProblemSet implements PSOConstants{
 		//modelFile = svm_train.main(crossValidationTrainArgs);
 		//System.out.print("Cross validation is done! The modelFile is " + modelFile);
 
+		removeTrainData(trainData);
+
 		return accuracy;
+	}
+
+	private static void removeTrainData(String trainData) {
+		File file = new File(ORG_PATH+trainData);
+		file.delete();
 	}
 
 	public static double evaluate(Location location) {
@@ -98,7 +102,6 @@ public class ProblemSet implements PSOConstants{
 	}
 	
 	private static String prepareData(int[] c){
-		// TODO: 2016/11/21  
 		//給予features 最大特徵數
 		boolean[] features = new boolean[PROBLEM_DIMENSION+2];
 
@@ -119,9 +122,8 @@ public class ProblemSet implements PSOConstants{
 
 	private static String makeTrainData(boolean[] features){
 		// 測試資料格式 <class> <lable>:<value> <lable>:<value>
-		UUID uuid = UUID.randomUUID();
 		long time  = new Date().getTime();
-		String trainData = ORG_DATA+uuid+"_"+time+".t";
+		String trainData = ORG_DATA+".t";
 		try (BufferedReader br = new BufferedReader(new FileReader(ORG_PATH+ORG_DATA)))
 		{
 			String rowData = "";
@@ -137,8 +139,10 @@ public class ProblemSet implements PSOConstants{
 					//取得特徵之lable
 					String[] feature = row[i].split(":");
 					//將 lable 編號 與 解碼後feactures 對應 並依照feactures結果選入特徵
+					int count = 1;
 					if(features[Integer.parseInt(feature[0])-1]){
-						rowData += " "+row[i];
+						rowData += " "+count+":"+feature[1];
+						count++;
 					}
 				}
 //				System.out.println(rowData);
