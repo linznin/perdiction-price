@@ -6,12 +6,9 @@ package org.gandhim.pso;
 // the code is for 2-dimensional space problem
 // but you can easily modify it to solve higher dimensional space problem
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
 

@@ -1,12 +1,10 @@
 package org.gandhim.pso;
 
-import org.gandhim.svm.svm_predict;
 import org.gandhim.svm.svm_train;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.UUID;
 
 /* author: gandhi - gandhi.mtm [at] gmail [dot] com - Depok, Indonesia */
 
@@ -155,8 +153,5 @@ public class ProblemSet implements PSOConstants{
 		}
 
 		return trainData;
-	}
-	private static boolean featureDecode(){
-		return true;
 	}
 }
