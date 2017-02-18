@@ -1,4 +1,4 @@
-package org.chening.text;
+package org.text.dic;
 
 import java.io.*;
 import java.util.ArrayList;
