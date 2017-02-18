@@ -1,6 +1,12 @@
 package org.text.core;
 
-import java.io.*;
+import org.mozilla.universalchardet.UniversalDetector;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,6 +17,8 @@ import java.util.HashMap;
 public class FileUilt implements FileConstants{
 
     protected HashMap<String,ArrayList<String>> dicMach;
+
+    protected String charset_ = new String();
 
     public ArrayList<String> analysis(String text) {
         ArrayList<String> result;
@@ -38,16 +46,29 @@ public class FileUilt implements FileConstants{
         return fileClasses;
     }
 
+
+    public String detectEncode(byte [] buf, int len){
+        UniversalDetector detector = new UniversalDetector(null);
+        detector.handleData(buf, 0, len);
+        detector.dataEnd();
+        charset_ = detector.getDetectedCharset();
+        return charset_;
+    }
+
     public ArrayList<String> readFile(File file) {
+        byte[] buf = new byte[4096];
         ArrayList<String> fileClasses = new ArrayList<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
+            FileInputStream fis = new FileInputStream(file);
+            int len;
             String fileLine = "";
-            while ((line = br.readLine()) !=null) {
+            while( (len=fis.read(buf,0,buf.length)) != -1) {
+                detectEncode(buf, len);
+                String line = new String(buf,0,len, charset_);
                 fileLine = fileLine.concat(line);
             }
             if (!"".equals(fileLine)) {
+                Charset.forName("UTF-8").encode(fileLine);
                 fileClasses.addAll(analysisFile(fileLine));
             }
         } catch (IOException e) {
