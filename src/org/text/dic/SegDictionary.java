@@ -40,6 +40,7 @@ public class SegDictionary {
                     }
                 }
             }
+            // 字典內容
             while ((line = br.readLine()) !=null) {
                 String[] wordDic = line.split("\t");
                 String word = wordDic[0];

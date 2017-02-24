@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
  */
 public class JibaUilt extends FileUilt {
 
-    public HashMap<String,ArrayList<String>> dicMach;
-
     public void execute() {
         SegDictionary segDictionary = new SegDictionary();
         segDictionary.setDicFile(new File(dicPath));
@@ -52,7 +50,7 @@ public class JibaUilt extends FileUilt {
     public void csvContent(HashMap<String, ArrayList<String>> filesClasses,ArrayList<String> titles, File csvFile) {
         String splitMark = ", ";
         for (String fileName : filesClasses.keySet()) {
-            String csvContent = fileName.replaceAll(",", "").concat(splitMark);
+            String csvContent = fileName.replaceAll(",", "").replace(".txt","").concat(splitMark);
             Set<String> uniqueClass = new HashSet<>(filesClasses.get(fileName));
             String content = titles.stream()
                     .map(title -> String.valueOf(Collections.frequency(uniqueClass, title)))
