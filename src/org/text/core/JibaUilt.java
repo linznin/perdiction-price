@@ -1,5 +1,6 @@
 package org.text.core;
 
+import org.text.dic.CustomDictionary;
 import org.text.dic.SegDictionary;
 import org.text.jiba.JibaTools;
 
@@ -13,10 +14,10 @@ import java.util.stream.Collectors;
 public class JibaUilt extends FileUilt {
 
     public void execute() {
-        SegDictionary segDictionary = new SegDictionary();
-        segDictionary.setDicFile(new File(dicPath));
-        ArrayList<String> classTitle = new ArrayList<>(Arrays.asList(targetFeatrue));
-        dicMach = segDictionary.getDicClass(classTitle);
+        CustomDictionary segDictionary = new CustomDictionary(new File(dicPath));
+//        segDictionary.setDicFile(new File(dicFile));
+        ArrayList<String> classTitle = new ArrayList<>(Arrays.asList(searchFile));
+        dicMach = segDictionary.getDicClass();
 
         HashMap<String,ArrayList<String>> filesClasses = scanFolder( new File(newsPath),"txt");
 
@@ -50,13 +51,20 @@ public class JibaUilt extends FileUilt {
     public void csvContent(HashMap<String, ArrayList<String>> filesClasses,ArrayList<String> titles, File csvFile) {
         String splitMark = ", ";
         for (String fileName : filesClasses.keySet()) {
-            String csvContent = fileName.replaceAll(",", "").replace(".txt","").concat(splitMark);
-            Set<String> uniqueClass = new HashSet<>(filesClasses.get(fileName));
-            String content = titles.stream()
-                    .map(title -> String.valueOf(Collections.frequency(uniqueClass, title)))
-                    .collect(Collectors.joining(splitMark));
-            csvContent = csvContent.concat(content);
-            writeLine(csvFile,csvContent);
+            String content = fileName.replaceAll(",", "").replace(".txt","");
+            ArrayList<String> uniqueClass = filesClasses.get(fileName);
+            HashMap<String, Integer> frequencymap = new HashMap<>();
+            for (String title : titles) {
+                Integer featureCount = 0;
+                for (String wordFeature : uniqueClass) {
+                    if (title.equals(wordFeature)) {
+                        featureCount++;
+                    }
+                }
+                frequencymap.put(title,featureCount);
+                content = content.concat(splitMark).concat(featureCount.toString());
+            }
+            writeLine(csvFile, content);
         }
     }
 

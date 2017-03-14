@@ -31,14 +31,14 @@ public class FileUilt implements FileConstants{
     }
 
     public ArrayList<String> analysisFile(String text) {
-        ArrayList<String> featureList = analysis(text);
+        ArrayList<String> wordList = analysis(text);
         ArrayList<String> fileClasses = new ArrayList<>();
         ArrayList<String> fileWords = new ArrayList<>();
-        for (String feature: featureList){
+        for (String word: wordList){
             for (String key: dicMach.keySet()) {
-                if (dicMach.get(key).contains(feature)){
+                if (dicMach.get(key).contains(word)){
                     fileClasses.add(key);
-                    fileWords.add(feature);
+                    fileWords.add(word);
                 }
             }
         }
