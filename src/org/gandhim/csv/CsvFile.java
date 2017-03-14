@@ -1,16 +1,14 @@
 package org.gandhim.csv;
 
 import org.gandhim.pso.PSOConstants;
+import org.text.core.FileUilt;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.ArrayList;
 
-/**
- * Created by linznin on 2016/11/18.
- */
 public class CsvFile implements PSOConstants {
+
+    FileUilt fileUilt = new FileUilt();
 
     public String genRowData(String path,String fileName){
         try (BufferedReader br = new BufferedReader(new FileReader(path+fileName)))
@@ -37,4 +35,16 @@ public class CsvFile implements PSOConstants {
         }
         return "";
     }
+
+    public void genCSVResult(String fileName,String correct,ArrayList<String> location){
+        ArrayList<String> result = new ArrayList<>();
+        result.add(fileName);
+        result.add(String.valueOf(C1));
+        result.add((String.valueOf(W)));
+        result.add(correct);
+        result.add(location.toString());
+        fileUilt.writeLine(new File(RESULT_CSV),result.toString());
+    }
+
+
 }

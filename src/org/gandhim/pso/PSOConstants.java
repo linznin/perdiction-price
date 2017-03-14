@@ -7,16 +7,23 @@ package org.gandhim.pso;
 
 public interface PSOConstants {
 	int SWARM_SIZE = 20;
-	int MAX_ITERATION = 100;
+	int MAX_ITERATION = 2000;
     int PROBLEM_DIMENSION = 30;
-    int LIMIT_ERR = 15;
-	double C1 = 2.5;
-	double C2 = 2.5;
+    int LIMIT_ERR = 20;
+	double C1 = 1;
+	double C2 = 1;
 	double W_UPPERBOUND = 0.9;
 	double W_LOWERBOUND = 0.4;
 	double W = 0.8;
-	String ORG_PATH = "/Users/linznin/tmp/data/";
-//	String ORG_PATH = "C:\\tmp\\data\\";
+
+
+	String GAMMA = "0.001953125";
+	String COST = "512.0";
+
+	String ORG_PATH ="/Users/linznin/tmp/";
+	//	String ORG_PATH = "C:\\tmp\\";
+	String DATA_PATH = ORG_PATH+"data/";
 	String ORG_DATA = "food_30_1d";
-	String RESULT_FILE = "result";
+	String RESULT_FILE = ORG_PATH+"result/result.txt";
+	String RESULT_CSV = ORG_PATH+"result.csv";
 }

@@ -53,7 +53,7 @@ public class svm_predict {
 			if(svm_type == svm_parameter.EPSILON_SVR ||
 			   svm_type == svm_parameter.NU_SVR)
 			{
-				svm_predict.info("Prob. model for test data: target value = predicted value + z,\nz: Laplace distribution e^(-|z|/sigma)/(2sigma),sigma="+svm.svm_get_svr_probability(model)+"\n");
+				svm_predict.info("Prob. model for getDicClass data: target value = predicted value + z,\nz: Laplace distribution e^(-|z|/sigma)/(2sigma),sigma="+svm.svm_get_svr_probability(model)+"\n");
 			}
 			else
 			{
