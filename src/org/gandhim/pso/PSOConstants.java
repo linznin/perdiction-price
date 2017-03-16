@@ -23,7 +23,9 @@ public interface PSOConstants {
 	String ORG_PATH ="/Users/linznin/tmp/";
 	//	String ORG_PATH = "C:\\tmp\\";
 	String DATA_PATH = ORG_PATH+"data/";
-	String ORG_DATA = "food_30_1d";
-	String RESULT_FILE = ORG_PATH+"result/result.txt";
-	String RESULT_CSV = ORG_PATH+"result.csv";
+	String ORG_DATA = "30/food_30_1d";
+
+	String RESULT_PATH = ORG_PATH+"result/";
+	String RESULT_FILE = RESULT_PATH+"result.txt";
+	String RESULT_CSV = RESULT_PATH+"result.csv";
 }
