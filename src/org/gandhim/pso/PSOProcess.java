@@ -55,8 +55,9 @@ class PSOProcess implements PSOConstants {
 		//double err = 9999;
 
 		//終止條件   最大疊代數 及 最小誤差
-		while (t < MAX_ITERATION && gBest < problemSet.ERR_TOLERANCE && limit < LIMIT_ERR){
+		while (t < MAX_ITERATION && gBest < problemSet.ERR_TOLERANCE ){
 
+//		while (t < MAX_ITERATION && gBest < problemSet.ERR_TOLERANCE && limit < LIMIT_ERR){
 			//權重遞減	
 //			w = W_UPPERBOUND - (((double) t) / MAX_ITERATION) * (W_UPPERBOUND - W_LOWERBOUND);
 			w = W;
@@ -75,8 +76,8 @@ class PSOProcess implements PSOConstants {
 				for (int j = 0; j < locationSize; j++) {
                     //get new velocity
                     newVel[j] = (w * p.getVelocity().getPos()[j]) +
-                                (r1 * C1) * (pBestLocation.get(i).getLoc()[j]) - p.getLocation().getLoc()[j] +
-                                (r2 * C2) * (gBestLocation.getLoc()[j] - p.getLocation().getLoc()[j]);
+                                (r1 * C1) * ((double) pBestLocation.get(i).getLoc()[j]) - (double) p.getLocation().getLoc()[j] +
+                                (r2 * C2) * ((double) gBestLocation.getLoc()[j] - (double) p.getLocation().getLoc()[j]);
 
 					if (j<2){ //gamma & cost location
 						//limit Velocity
@@ -95,13 +96,16 @@ class PSOProcess implements PSOConstants {
 							newLoc[j] = problemSet.LOC_LOW[j];
 						}
 
-					} else { // feature location
-						//get new location
-						//TODO
-						if (randId < PSOUtility.sigmoid(newVel[j])){
-							newLoc[j] = 1;
-						} else {
-							newLoc[j] = 0;
+					} else {
+						//feature location get new location
+						//如果更改機率值小於亂數值則更改位置
+						newLoc[j] = p.getLocation().getLoc()[j];
+						if (PSOUtility.sigmoid(newVel[j]) < randId){
+							if (newLoc[j] == 1) {
+								newLoc[j] = 0;
+							} else {
+								newLoc[j] = 1;
+							}
 						}
 					}
                 }
