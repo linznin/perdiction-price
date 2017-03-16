@@ -26,6 +26,9 @@ class PSOProcess implements PSOConstants {
 	private int locationSize = PROBLEM_DIMENSION+2;
 	private String dataPath = DATA_PATH +ORG_DATA;
 
+	double w = W;
+	double c = C1;
+
 	private ProblemSet problemSet = new ProblemSet();
 
 	public PSOProcess(){}
@@ -33,6 +36,13 @@ class PSOProcess implements PSOConstants {
 	public PSOProcess(String path, String dimension){
 		this.locationSize = Integer.parseInt(dimension)+2;
 		this.dataPath = path;
+	}
+
+	public PSOProcess(String path, String dimension, double cVaule, double wVaule){
+		this.locationSize = Integer.parseInt(dimension)+2;
+		this.dataPath = path;
+		this.c = cVaule;
+		this.w = wVaule;
 	}
 
 	synchronized void execute() {
@@ -50,7 +60,6 @@ class PSOProcess implements PSOConstants {
 
 		updateBestFitness();
 		int t = 0;
-		double w;
 		int limit = 0;
 		//double err = 9999;
 
@@ -60,7 +69,6 @@ class PSOProcess implements PSOConstants {
 //		while (t < MAX_ITERATION && gBest < problemSet.ERR_TOLERANCE && limit < LIMIT_ERR){
 			//權重遞減	
 //			w = W_UPPERBOUND - (((double) t) / MAX_ITERATION) * (W_UPPERBOUND - W_LOWERBOUND);
-			w = W;
 
 			for(int i=0; i<SWARM_SIZE; i++) {
 				System.out.println("\n SWARM "+i);
@@ -76,8 +84,8 @@ class PSOProcess implements PSOConstants {
 				for (int j = 0; j < locationSize; j++) {
                     //get new velocity
                     newVel[j] = (w * p.getVelocity().getPos()[j]) +
-                                (r1 * C1) * ((double) pBestLocation.get(i).getLoc()[j]) - (double) p.getLocation().getLoc()[j] +
-                                (r2 * C2) * ((double) gBestLocation.getLoc()[j] - (double) p.getLocation().getLoc()[j]);
+                                (r1 * c) * ((double) pBestLocation.get(i).getLoc()[j]) - (double) p.getLocation().getLoc()[j] +
+                                (r2 * c) * ((double) gBestLocation.getLoc()[j] - (double) p.getLocation().getLoc()[j]);
 
 					if (j<2){ //gamma & cost location
 						//limit Velocity
@@ -223,12 +231,14 @@ class PSOProcess implements PSOConstants {
 
 	private void recordResult(String gBest,String location, Long time){
 		CsvFile csvFile = new CsvFile();
-		csvFile.genCSVResult(RESULT_FILE,gBest,location.replace(",",";"));
+		csvFile.genCSVResult(RESULT_FILE, gBest, location.replace(",",";"), String.valueOf(c), String.valueOf(w) );
 
 		try (FileWriter writer = new FileWriter(RESULT_FILE, true))
 		{
 			writer.append("****************************************************** \n");
 			writer.append("Data file : "+dataPath+"\n");
+			writer.append("C : "+String.valueOf(c)+"\n");
+			writer.append("W : "+String.valueOf(w)+"\n");
 			writer.append("gBest : "+gBest+"\n");
 			writer.append("location : "+location+"\n");
 			writer.append("time : "+time+" s\n");
