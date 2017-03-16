@@ -6,6 +6,8 @@ package org.gandhim.pso;
 // the code is for 2-dimensional space problem
 // but you can easily modify it to solve higher dimensional space problem
 
+import org.gandhim.csv.CsvFile;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -95,6 +97,7 @@ class PSOProcess implements PSOConstants {
 
 					} else { // feature location
 						//get new location
+						//TODO
 						if (randId < PSOUtility.sigmoid(newVel[j])){
 							newLoc[j] = 1;
 						} else {
@@ -215,6 +218,9 @@ class PSOProcess implements PSOConstants {
 
 
 	private void recordResult(String gBest,String location, Long time){
+		CsvFile csvFile = new CsvFile();
+		csvFile.genCSVResult(RESULT_FILE,gBest,location.replace(",",";"));
+
 		try (FileWriter writer = new FileWriter(RESULT_FILE, true))
 		{
 			writer.append("****************************************************** \n");
