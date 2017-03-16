@@ -16,7 +16,7 @@ public class KeywordsUilt extends FileUilt {
         SegDictionary segDictionary = new SegDictionary();
         segDictionary.setDicFile(new File(dicFile));
         ArrayList<String> classTitle = new ArrayList<>(Arrays.asList(targetFeatrue));
-        dicMach = segDictionary.getDicClass(classTitle);
+        dicMach = segDictionary.getDicClass();
 
         HashMap<String,ArrayList<String>> filesClasses = scanFolder( new File(textPath),"dat");
         // csv title

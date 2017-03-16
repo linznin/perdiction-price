@@ -17,8 +17,14 @@ import java.util.HashMap;
 public class CustomDictionary implements FileConstants{
 
     HashMap<String ,ArrayList<String>> dicMach = new HashMap<>();
+
     private File folder;
 
+    private HashMap<String,String> targetSet = new HashMap<>();
+
+    private ArrayList<String> title = new ArrayList<>();
+
+    private ArrayList<String> keySet = new ArrayList<>();
 
     public CustomDictionary(File floder){
         this.folder = floder;
@@ -42,17 +48,42 @@ public class CustomDictionary implements FileConstants{
 
                     BufferedReader br = new BufferedReader(new FileReader(fileEntry));
                     String line ;
-                    br.readLine();
+                    String key = br.readLine();
                     while ((line = br.readLine()) !=null && !"".equals(line)) {
                         classes.add(line);
                     }
                     dicMach.put(fileName,classes);
+                    title.add(fileName);
+                    keySet.add(fileName);
                 }
             }
         }catch (Exception e) {
-
+            e.printStackTrace();
         }
         return dicMach;
     }
 
+    public HashMap<String, String> getTargetSet() {
+        return targetSet;
+    }
+
+    public void setTargetSet(HashMap<String, String> targetSet) {
+        this.targetSet = targetSet;
+    }
+
+    public ArrayList<String> getTitle() {
+        return title;
+    }
+
+    public void setTitle(ArrayList<String> title) {
+        this.title = title;
+    }
+
+    public ArrayList<String> getKeySet() {
+        return keySet;
+    }
+
+    public void setKeySet(ArrayList<String> keySet) {
+        this.keySet = keySet;
+    }
 }

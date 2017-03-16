@@ -14,25 +14,27 @@ import java.util.stream.Collectors;
 public class JibaUilt extends FileUilt {
 
     public void execute() {
+//        SegDictionary segDictionary = new SegDictionary(new File(dicFile));
         CustomDictionary segDictionary = new CustomDictionary(new File(dicPath));
-//        segDictionary.setDicFile(new File(dicFile));
-        ArrayList<String> classTitle = new ArrayList<>(Arrays.asList(searchFile));
         dicMach = segDictionary.getDicClass();
 
         HashMap<String,ArrayList<String>> filesClasses = scanFolder( new File(newsPath),"txt");
 
         // csv title
-        csvTitle(classTitle,new File(resultPath));
+        csvTitle(segDictionary.getTitle(),new File(resultPath));
         // csv content
-        csvContent(filesClasses,new ArrayList<>(dicMach.keySet()),new File(resultPath));
+        csvContent(filesClasses,segDictionary.getKeySet(),new File(resultPath));
     }
 
     public void csvTitle(ArrayList<String> titles, File csvFile) {
-        String splitMark = ", ";
+        String splitMark = ",";
         String csvTitle = "FileName".concat(splitMark);
-        String title = titles.stream()
-                .collect(Collectors.joining(splitMark));
-        csvTitle = csvTitle.concat(title);
+
+        for (String title : titles){
+            csvTitle = csvTitle.concat(title).concat(splitMark);
+        }
+
+        csvTitle = csvTitle.substring(0,csvTitle.length()-1);
         writeLine(csvFile,csvTitle);
     }
 

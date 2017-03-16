@@ -36,13 +36,13 @@ public class CsvFile implements PSOConstants {
         return "";
     }
 
-    public void genCSVResult(String fileName,String correct,ArrayList<String> location){
+    public void genCSVResult(String fileName,String correct,String location){
         ArrayList<String> result = new ArrayList<>();
         result.add(fileName);
         result.add(String.valueOf(C1));
         result.add((String.valueOf(W)));
         result.add(correct);
-        result.add(location.toString());
+        result.add(location);
         fileUilt.writeLine(new File(RESULT_CSV),result.toString());
     }
 
