@@ -104,7 +104,6 @@ public class ProblemSet implements PSOConstants{
 	}
 
 	private int encode(char[] c){
-		//TODO
 		int i = Integer.parseInt(c.toString());
 		System.out.println("encode "+c.toString()+" to "+i);
 		return i;
@@ -131,7 +130,7 @@ public class ProblemSet implements PSOConstants{
 
 	private String makeTrainData(boolean[] features){
 		// 測試資料格式 <class> <lable>:<value> <lable>:<value>
-//		trainData = org_path+".t";
+		//trainData = org_path+".t";
 		try (BufferedReader br = new BufferedReader(new FileReader(org_path)))
 		{
 			String rowData = "";
@@ -145,11 +144,10 @@ public class ProblemSet implements PSOConstants{
 				// 將不必要之feature 去除
 				int count = 1;
 				for (int i=1;i<row.length;i++){
-					//取得特徵之lable
-					String[] feature = row[i].split(":");
 					//將 lable 編號 與 解碼後feactures 對應 並依照feactures結果選入特徵
-					if(features[Integer.parseInt(feature[0])-1]){
-						rowData += " "+count+":"+feature[1];
+					String[] topicValue = row[i].split(":");
+					if(features[Integer.parseInt(topicValue[0])-1]){
+						rowData += " "+count+":"+topicValue[1];
 						count++;
 					}
 				}

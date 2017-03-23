@@ -8,6 +8,7 @@ package org.gandhim.pso;
 
 import org.gandhim.csv.CsvFile;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -49,7 +50,6 @@ class PSOProcess implements PSOConstants {
 		long time1 = System.currentTimeMillis();
 
 		problemSet = new ProblemSet(dataPath, locationSize);
-
         //族群初始化
 		initializeSwarm();
 		updateFitnessList();
@@ -64,9 +64,9 @@ class PSOProcess implements PSOConstants {
 		//double err = 9999;
 
 		//終止條件   最大疊代數 及 最小誤差
-		while (t < MAX_ITERATION && gBest < problemSet.ERR_TOLERANCE ){
+//		while (t < MAX_ITERATION && gBest < problemSet.ERR_TOLERANCE ){
 
-//		while (t < MAX_ITERATION && gBest < problemSet.ERR_TOLERANCE && limit < LIMIT_ERR){
+		while (t < MAX_ITERATION && gBest < problemSet.ERR_TOLERANCE && limit < LIMIT_ERR){
 			//權重遞減	
 //			w = W_UPPERBOUND - (((double) t) / MAX_ITERATION) * (W_UPPERBOUND - W_LOWERBOUND);
 
@@ -231,12 +231,13 @@ class PSOProcess implements PSOConstants {
 
 	private void recordResult(String gBest,String location, Long time){
 		CsvFile csvFile = new CsvFile();
-		csvFile.genCSVResult(RESULT_FILE, gBest, location.replace(",",";"), String.valueOf(c), String.valueOf(w) );
+		String fileName = new File(dataPath).getName();
+		csvFile.genCSVResult(fileName , gBest, location.replace(",",";"), String.valueOf(c), String.valueOf(w) );
 
 		try (FileWriter writer = new FileWriter(RESULT_FILE, true))
 		{
 			writer.append("****************************************************** \n");
-			writer.append("Data file : "+dataPath+"\n");
+			writer.append("Data file : "+fileName+"\n");
 			writer.append("C : "+String.valueOf(c)+"\n");
 			writer.append("W : "+String.valueOf(w)+"\n");
 			writer.append("gBest : "+gBest+"\n");

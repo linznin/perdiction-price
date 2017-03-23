@@ -32,6 +32,12 @@ public class ResultCsv {
                                 resultC.add(fileEntry.getName());
                                 resultC.add(ls[2].split("\\\\")[4]);
                                 break;
+                            case "C":
+                                resultC.add(ls[1]);
+                                break;
+                            case "W":
+                                resultC.add(ls[1]);
+                                break;
                             case "gBest ":
                                 resultC.add(ls[1]);
                                 break;
