@@ -1,5 +1,9 @@
-package org.gandhim.pso;
+package org.gandhim.pso.Problem;
 
+import org.chening.text.core.Constants;
+import org.gandhim.pso.Location;
+import org.gandhim.pso.PSOConstants;
+import org.gandhim.svm.SvmDriver;
 import org.gandhim.svm.svm_train;
 
 import java.io.*;
@@ -17,7 +21,7 @@ import java.util.Date;
 // if your problem space is greater than 2-dimensional space
 // you need to introduce a new variable (other than x and y)
 
-public class ProblemSet implements PSOConstants{
+public class ProblemSet implements PSOConstants, Constants {
 	public final int[] LOC_HIGH = {1,20}; //[gamma ,cost]
 	public final int[] LOC_LOW = {-20,1};
 	public final int VEL_LOW = -5;	//最小速度
@@ -30,70 +34,38 @@ public class ProblemSet implements PSOConstants{
     public String gamma = GAMMA;
     public String cost = COST;
 	public int problem_dimension = PROBLEM_DIMENSION+2;
-    public final String nr_fold = "10";
 
-    private String org_path;
-    private String trainData;
+	SvmDriver svmDriver = new SvmDriver();
+
+    protected String org_path;
+    protected String trainData;
 
     public ProblemSet(){}
 
     public ProblemSet(String org_path,int dimension){
     	this.org_path = org_path;
     	this.problem_dimension = dimension;
-		this.trainData = org_path+".t";
-	}
-
-	//http://blog.csdn.net/yangliuy/article/details/8041343
-	//for libsvm
-	private double executeSVM(int[] c){
-		System.out.println("c = [" + Arrays.toString(c) + "]");
-		double accuracy = 0;
-		prepareData(c);
-		//svm_train:
-		//    param: String[], parse result of command line parameter of svm-train
-		//    return: String, the directory of modelFile
-		//svm_predect:
-		//    param: String[], parse result of command line parameter of svm-predict, including the modelfile
-		//    return: Double, the accuracy of SVM classification
-		try {
-            //svmtrain [options] training_set_file [model_file]
-			//directory of -g gamma, -c cost,/* -v nr_fold,*/ training file, model file
-			String[] trainArgs = {"-g", gamma, "-c", cost, "-v", nr_fold, trainData};
-//			String[] trainArgs = {"-g", gamma, "-c", cost, DATA_PATH+trainData, DATA_PATH+trainData+".model"};
-
-			//使用交叉驗證會直接回傳正確率 而一般會回傳 model file name
-//			String modelFile = svm_train.main(trainArgs);
-			accuracy = Double.parseDouble(svm_train.main(trainArgs));
-
-            //svmpredict test_file model_file output_file
-			//directory of getDicClass file, model file, result file
-//			String[] testArgs = {DATA_PATH+trainData, modelFile, DATA_PATH+trainData+"_reslut"};
-//			accuracy = svm_predict.main(testArgs);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("gamma = [" + gamma + "] , cost = ["+cost+"]");
-		System.out.println("SVM Classification is done! The accuracy is " + accuracy);
-		System.out.println("trainData = [" + trainData + "]");
-
-		//Test for cross validation
-		//String[] crossValidationTrainArgs = {"-v", "10", "UCI-breast-cancer-tra"};// 10 fold cross validation
-		//modelFile = svm_train.main(crossValidationTrainArgs);
-		//System.out.print("Cross validation is done! The modelFile is " + modelFile);
-
-		removeTrainData();
-
-		return accuracy;
-	}
-
-	private void removeTrainData() {
-		new File(trainData).delete();
 	}
 
 	public double evaluate(Location location) {
 		int[] local = location.getLoc(); // the location
 		return executeSVM(local);
+	}
+
+	protected double executeSVM(int[] c){
+		System.out.println("c = [" + Arrays.toString(c) + "]");
+		double accuracy = 0;
+		trainData = prepareData(c);
+
+		accuracy = svmDriver.executeSVM(gamma, cost, trainData);
+
+		System.out.println("gamma = [" + gamma + "] , cost = ["+cost+"]");
+		System.out.println("SVM Classification is done! The accuracy is " + accuracy);
+		System.out.println("trainData = [" + trainData + "]");
+
+		removeTrainData();
+
+		return accuracy;
 	}
 
 	private char[] decode(int i){
@@ -109,7 +81,7 @@ public class ProblemSet implements PSOConstants{
 		return i;
 	}
 	
-	private String prepareData(int[] c){
+	protected String prepareData(int[] c){
 		//給予features 最大特徵數
 		boolean[] features = new boolean[problem_dimension];
 
@@ -125,13 +97,15 @@ public class ProblemSet implements PSOConstants{
 			}
 		}
 		//回傳測試資料檔名稱
-		return makeTrainData(features);
+		return makeTrainData(features, org_path);
 	}
 
-	private String makeTrainData(boolean[] features){
+	protected String makeTrainData(boolean[] features,String path){
 		// 測試資料格式 <class> <lable>:<value> <lable>:<value>
 		//trainData = org_path+".t";
-		try (BufferedReader br = new BufferedReader(new FileReader(org_path)))
+		File org_data = new File(path);
+		String trainData = TRAIN_PATH+org_data.getName()+".t";
+		try (BufferedReader br = new BufferedReader(new FileReader(org_data)))
 		{
 			String rowData = "";
 			PrintWriter writer = new PrintWriter(trainData, "UTF-8");
@@ -142,13 +116,13 @@ public class ProblemSet implements PSOConstants{
 				String[] row = line.split(" ");
 				rowData = row[0];
 				// 將不必要之feature 去除
-				int count = 1;
+				int index = 1;
 				for (int i=1;i<row.length;i++){
 					//將 lable 編號 與 解碼後feactures 對應 並依照feactures結果選入特徵
 					String[] topicValue = row[i].split(":");
 					if(features[Integer.parseInt(topicValue[0])-1]){
-						rowData += " "+count+":"+topicValue[1];
-						count++;
+						rowData += " "+index+":"+topicValue[1];
+						index++;
 					}
 				}
 //				System.out.println(rowData);
@@ -161,5 +135,9 @@ public class ProblemSet implements PSOConstants{
 		}
 
 		return trainData;
+	}
+
+	private void removeTrainData() {
+		new File(trainData).delete();
 	}
 }

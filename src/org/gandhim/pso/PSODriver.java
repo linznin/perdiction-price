@@ -4,14 +4,16 @@ package org.gandhim.pso;
 
 // this is a driver class to execute the PSO process
 
+import org.chening.text.core.Constants;
+
 import java.io.File;
 
-public class PSODriver implements PSOConstants{
+public class PSODriver implements PSOConstants, Constants{
 	public static void main(String args[]) {
 //		new CsvFile().genRowData("/Users/linznin/tmp/source data/","semiconductor_120_5d");
-		new PSOProcess().execute();
-//		scanFolder(new File(DATA_PATH), C1, W);
-//		parameterScand(new File(DATA_PATH));
+//		new PSOProcess(SEMANTIC_FILE,"0").execute();
+		scanFolder(new File(SEMANTIC_PATH+"data/"), C1, W);
+//		parameterScand(new File(LDA_DATA_PATH));
 	}
 
 	static double[] cvalues = { 1.5, 2, 2.5 };

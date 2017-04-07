@@ -6,7 +6,11 @@ package org.gandhim.pso;
 // the code is for 2-dimensional space problem
 // but you can easily modify it to solve higher dimensional space problem
 
+import org.chening.text.core.Constants;
 import org.gandhim.csv.CsvFile;
+import org.gandhim.pso.Problem.ProblemSet;
+import org.gandhim.pso.Problem.SemanticLdaProblemSet;
+import org.gandhim.pso.Problem.SemanticProblemSet;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,7 +19,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
 
-class PSOProcess implements PSOConstants {
+class PSOProcess implements PSOConstants, Constants {
 	private Vector<Particle> swarm = new Vector<>();
 	private double[] pBest = new double[SWARM_SIZE];
 	private Vector<Location> pBestLocation = new Vector<>();
@@ -25,18 +29,19 @@ class PSOProcess implements PSOConstants {
 	private Random generator = new Random();
 
 	private int locationSize = PROBLEM_DIMENSION+2;
-	private String dataPath = DATA_PATH +ORG_DATA;
+	private String dataPath = LDA_DATA_PATH +ORG_DATA;
 
 	double w = W;
 	double c = C1;
 
-	private ProblemSet problemSet = new ProblemSet();
+	private SemanticLdaProblemSet problemSet = new SemanticLdaProblemSet();
 
 	public PSOProcess(){}
 
 	public PSOProcess(String path, String dimension){
 		this.locationSize = Integer.parseInt(dimension)+2;
 		this.dataPath = path;
+		this.problemSet = new SemanticLdaProblemSet(dataPath, locationSize);
 	}
 
 	public PSOProcess(String path, String dimension, double cVaule, double wVaule){
@@ -44,12 +49,12 @@ class PSOProcess implements PSOConstants {
 		this.dataPath = path;
 		this.c = cVaule;
 		this.w = wVaule;
+		this.problemSet = new SemanticLdaProblemSet(dataPath, locationSize);
 	}
 
 	synchronized void execute() {
 		long time1 = System.currentTimeMillis();
 
-		problemSet = new ProblemSet(dataPath, locationSize);
         //族群初始化
 		initializeSwarm();
 		updateFitnessList();
@@ -61,7 +66,6 @@ class PSOProcess implements PSOConstants {
 		updateBestFitness();
 		int t = 0;
 		int limit = 0;
-		//double err = 9999;
 
 		//終止條件   最大疊代數 及 最小誤差
 //		while (t < MAX_ITERATION && gBest < problemSet.ERR_TOLERANCE ){
