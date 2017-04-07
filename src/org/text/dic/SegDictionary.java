@@ -1,6 +1,6 @@
 package org.text.dic;
 
-import org.text.core.FileConstants;
+import org.text.core.TextConstants;
 
 import java.io.*;
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.*;
  * Created by linznin on 2017/2/3.
  *
  */
-public class SegDictionary implements FileConstants {
+public class SegDictionary implements TextConstants {
 
 
 

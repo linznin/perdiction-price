@@ -1,5 +1,6 @@
 package org.text.core;
 
+import org.chening.text.core.Constants;
 import org.mozilla.universalchardet.UniversalDetector;
 
 import java.io.File;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 /**
  * Created by linznin on 2017/2/16.
  */
-public class FileUilt implements FileConstants{
+public class FileUilt implements TextConstants,Constants {
 
     protected HashMap<String,ArrayList<String>> dicMach;
 

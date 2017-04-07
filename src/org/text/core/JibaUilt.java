@@ -1,12 +1,10 @@
 package org.text.core;
 
 import org.text.dic.CustomDictionary;
-import org.text.dic.SegDictionary;
 import org.text.jiba.JibaTools;
 
 import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by linznin on 2017/2/17.
@@ -14,16 +12,16 @@ import java.util.stream.Collectors;
 public class JibaUilt extends FileUilt {
 
     public void execute() {
-//        SegDictionary segDictionary = new SegDictionary(new File(dicFile));
-        CustomDictionary segDictionary = new CustomDictionary(new File(dicPath));
+//        SegDictionary segDictionary = new SegDictionary(new File(CLIWC_DICFILE));
+        CustomDictionary segDictionary = new CustomDictionary(new File(DIC_PATH));
         dicMach = segDictionary.getDicClass();
 
-        HashMap<String,ArrayList<String>> filesClasses = scanFolder( new File(newsPath),"txt");
+        HashMap<String,ArrayList<String>> filesClasses = scanFolder( new File(NEWS_PATH),"txt");
 
         // csv title
-        csvTitle(segDictionary.getTitle(),new File(resultPath));
+        csvTitle(segDictionary.getTitle(),new File(SEMANTIC_FILE));
         // csv content
-        csvContent(filesClasses,segDictionary.getKeySet(),new File(resultPath));
+        csvContent(filesClasses,segDictionary.getKeySet(),new File(SEMANTIC_FILE));
     }
 
     public void csvTitle(ArrayList<String> titles, File csvFile) {
@@ -50,12 +48,13 @@ public class JibaUilt extends FileUilt {
         return result;
     }
 
-    public void csvContent(HashMap<String, ArrayList<String>> filesClasses,ArrayList<String> titles, File csvFile) {
+    public HashMap<String, HashMap<String,String>> csvContent(HashMap<String, ArrayList<String>> filesClasses,ArrayList<String> titles, File csvFile) {
+        HashMap<String,HashMap<String, String>> tmp = new HashMap<>();
         String splitMark = ", ";
         for (String fileName : filesClasses.keySet()) {
             String content = fileName.replaceAll(",", "").replace(".txt","");
             ArrayList<String> uniqueClass = filesClasses.get(fileName);
-            HashMap<String, Integer> frequencymap = new HashMap<>();
+            HashMap<String, String> frequencymap = new HashMap<>();
             for (String title : titles) {
                 Integer featureCount = 0;
                 for (String wordFeature : uniqueClass) {
@@ -63,11 +62,14 @@ public class JibaUilt extends FileUilt {
                         featureCount++;
                     }
                 }
-                frequencymap.put(title,featureCount);
+                frequencymap.put(title,featureCount.toString());
                 content = content.concat(splitMark).concat(featureCount.toString());
+                tmp.put(fileName, frequencymap);
             }
             writeLine(csvFile, content);
         }
+
+        return tmp;
     }
 
 }

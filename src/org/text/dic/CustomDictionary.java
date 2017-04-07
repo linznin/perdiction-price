@@ -1,6 +1,6 @@
 package org.text.dic;
 
-import org.text.core.FileConstants;
+import org.text.core.TextConstants;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,7 +14,7 @@ import java.util.HashMap;
  * 為了符合自定義字典
  * 並且預期字典為多個檔案存放入同一字典目錄
  */
-public class CustomDictionary implements FileConstants{
+public class CustomDictionary implements TextConstants {
 
     HashMap<String ,ArrayList<String>> dicMach = new HashMap<>();
 
@@ -31,11 +31,6 @@ public class CustomDictionary implements FileConstants{
     }
 
     public CustomDictionary() {}
-
-    public static void main(String[] args) {
-//        CustomDictionary customDictionary = new CustomDictionary("/Users/linznin/tmp/dic/dictionary");
-//        customDictionary.getDicClass();
-    }
 
     public HashMap<String,ArrayList<String>> getDicClass() {
         try {

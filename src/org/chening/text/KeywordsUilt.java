@@ -14,15 +14,15 @@ public class KeywordsUilt extends FileUilt {
 
     public void execute() {
         SegDictionary segDictionary = new SegDictionary();
-        segDictionary.setDicFile(new File(dicFile));
+        segDictionary.setDicFile(new File(CLIWC_DICFILE));
         ArrayList<String> classTitle = new ArrayList<>(Arrays.asList(targetFeatrue));
         dicMach = segDictionary.getDicClass();
 
-        HashMap<String,ArrayList<String>> filesClasses = scanFolder( new File(textPath),"dat");
+        HashMap<String,ArrayList<String>> filesClasses = scanFolder( new File(KEYWORD_PATH),"dat");
         // csv title
-        csvTitle(classTitle,new File(resultPath));
+        csvTitle(classTitle,new File(SEMANTIC_FILE));
         // csv content
-        csvContent(filesClasses,new ArrayList<>(dicMach.keySet()),new File(resultPath));
+        csvContent(filesClasses,new ArrayList<>(dicMach.keySet()),new File(SEMANTIC_FILE));
     }
 
     public void csvTitle(ArrayList<String> titles, File csvFile) {
