@@ -24,7 +24,9 @@ public class SvmDriver implements Constants, TextConstants{
         try {
             //svmtrain [options] training_set_file [model_file]
             //directory of -g gamma, -c cost,/* -v nr_fold,*/ training file, model file
-            String[] trainArgs = {"-g", gamma, "-c", cost, "-v", nr_fold, trainData};
+            String scaleFile = scaleData(trainData);
+
+            String[] trainArgs = {"-g", gamma, "-c", cost, "-v", nr_fold, scaleFile};
 //			String[] trainArgs = {"-g", gamma, "-c", cost, LDA_DATA_PATH+trainData, LDA_DATA_PATH+trainData+".model"};
 
             //使用交叉驗證會直接回傳正確率 而一般會回傳 model file name
@@ -40,6 +42,17 @@ public class SvmDriver implements Constants, TextConstants{
             e.printStackTrace();
         }
         return accuracy;
+    }
+
+    public String scaleData(String trainFile){
+        String scaleFile = trainFile+".scale";
+        String[] scaleArgs = {"-d",scaleFile,trainFile};
+        try {
+            svm_scale.main(scaleArgs);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return scaleFile;
     }
 
 
