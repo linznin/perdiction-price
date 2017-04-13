@@ -3,9 +3,8 @@ package org.gandhim.svm;
 import org.chening.text.core.Constants;
 import org.text.core.TextConstants;
 
-import javax.jnlp.FileContents;
-import java.io.*;
-import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
 
 public class SvmDriver implements Constants, TextConstants{
 
@@ -33,6 +32,7 @@ public class SvmDriver implements Constants, TextConstants{
 //			String modelFile = svm_train.main(trainArgs);
             accuracy = Double.parseDouble(svm_train.main(trainArgs));
 
+            new File(scaleFile).delete();
             //svmpredict test_file model_file output_file
             //directory of getDicClass file, model file, result file
 //			String[] testArgs = {LDA_DATA_PATH+trainData, modelFile, LDA_DATA_PATH+trainData+"_reslut"};
