@@ -57,7 +57,7 @@ class svm_scale
         }
 
 
-        System.out.print(value + " ");
+//        System.out.print(value + " ");
     }
 
     private void output(int index, double value) throws IOException {
@@ -78,7 +78,7 @@ class svm_scale
         {
             if (scaleWrite!=null)
                 scaleWrite.write(index + ":" + value + " ");
-            System.out.print(index + ":" + value + " ");
+//            System.out.print(index + ":" + value + " ");
             new_num_nonzeros++;
         }
     }
@@ -343,9 +343,12 @@ class svm_scale
 
             for(i=next_index;i<= max_index;i++)
                 output(i, 0);
-            if (scaleWrite != null)
+            if (scaleWrite != null) {
                 scaleWrite.write("\n");
-            System.out.print("\n");
+                scaleWrite.flush();
+            }
+
+//            System.out.print("\n");
         }
         if (new_num_nonzeros > num_nonzeros)
             System.err.print(
@@ -354,6 +357,9 @@ class svm_scale
                             +"Use -l 0 if many original feature values are zeros\n");
 
         fp.close();
+        if (scaleWrite != null) {
+            scaleWrite.close();
+        }
     }
 
     public static void main(String argv[]) throws IOException
