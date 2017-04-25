@@ -7,7 +7,7 @@ public interface Constants {
 
 
     String ORG_PATH ="/Users/linznin/tmp/";
-    //	String ORG_PATH = "C:\\tmp\\data";
+    //	String ORG_PATH = "C:\\tmp\\";
 
     String DIC_PATH = ORG_PATH + "dic/dictionary";
     String CLIWC_DICFILE = ORG_PATH + "dic/cliwc_v1.txt";
@@ -15,7 +15,7 @@ public interface Constants {
 
     String LDA_DATA_PATH = ORG_PATH+"data/";
     String TRAIN_PATH = ORG_PATH+"train/";
-    String ORG_DATA = "30/compute_30_1d";
+    String ORG_DATA = "30/computer_30_1d";
 
     String RESULT_PATH = ORG_PATH+"result/";
     String RESULT_FILE = RESULT_PATH+"result";
