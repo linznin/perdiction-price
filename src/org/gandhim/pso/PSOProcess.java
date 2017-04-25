@@ -34,14 +34,14 @@ class PSOProcess implements PSOConstants, Constants {
 	double w = W;
 	double c = C1;
 
-	private SemanticLdaProblemSet problemSet = new SemanticLdaProblemSet();
+	private ProblemSet problemSet = new ProblemSet();
 
 	public PSOProcess(){}
 
 	public PSOProcess(String path, String dimension){
 		this.locationSize = Integer.parseInt(dimension)+2;
 		this.dataPath = path;
-		this.problemSet = new SemanticLdaProblemSet(dataPath, locationSize);
+		this.problemSet = new ProblemSet(dataPath, locationSize);
 	}
 
 	public PSOProcess(String path, String dimension, double cVaule, double wVaule){
@@ -49,7 +49,7 @@ class PSOProcess implements PSOConstants, Constants {
 		this.dataPath = path;
 		this.c = cVaule;
 		this.w = wVaule;
-		this.problemSet = new SemanticLdaProblemSet(dataPath, locationSize);
+		this.problemSet = new ProblemSet(dataPath, locationSize);
 	}
 
 	synchronized void execute() {

@@ -44,7 +44,7 @@ public class ProblemSet implements PSOConstants, Constants {
 
     public ProblemSet(String org_path,int dimension){
     	this.org_path = org_path;
-    	this.problem_dimension = dimension;
+    	this.problem_dimension = dimension-2;
 	}
 
 	public double evaluate(Location location) {
@@ -66,19 +66,6 @@ public class ProblemSet implements PSOConstants, Constants {
 		removeTrainData();
 
 		return accuracy;
-	}
-
-	private char[] decode(int i){
-
-		char[] c = Integer.toBinaryString(i).toCharArray();
-		System.out.println("decode "+i+" to "+String.valueOf(c));
-		return c;
-	}
-
-	private int encode(char[] c){
-		int i = Integer.parseInt(c.toString());
-		System.out.println("encode "+c.toString()+" to "+i);
-		return i;
 	}
 	
 	protected String prepareData(int[] c){
