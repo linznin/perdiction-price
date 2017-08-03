@@ -2,14 +2,10 @@ package org.chening.text.semantic;
 
 import org.chening.text.core.ProSetting;
 import org.chening.text.dic.CliwcDictionary;
-import org.chening.text.fileUilt.TextConstants;
+import org.chening.text.fileUilt.FileUilt;
 import org.chening.text.jieba.JiebaTools;
-import org.mozilla.universalchardet.UniversalDetector;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,10 +13,11 @@ import java.util.HashMap;
 /**
  * Created by linznin on 2017/2/16.
  */
-public class SemanticUilt implements TextConstants {
+public class SemanticUilt implements SemanticConstants {
 
     protected HashMap<String,ArrayList<String>> dicMach;
-    protected String charset_ = new String();
+    protected FileUilt fileUilt = new FileUilt();
+
 
     public void execute() {
         System.out.println(ProSetting.OPTIMIZATION_FUNCTION);
@@ -34,7 +31,7 @@ public class SemanticUilt implements TextConstants {
         csvContent(filesSemanticClasses,cliwcDictionary.getKeySet(),new File(ProSetting.SEMANTIC_RESULT_FILE));
     }
 
-    public HashMap<String,ArrayList<String>> scanFolder(File Path, String fileType) {
+    private HashMap<String,ArrayList<String>> scanFolder(File Path, String fileType) {
         HashMap<String,ArrayList<String>> filesClasses = new HashMap<>();
         for (final File fileEntry : Path.listFiles()) {
             if (fileEntry.isDirectory()) {
@@ -51,7 +48,7 @@ public class SemanticUilt implements TextConstants {
         return filesClasses;
     }
 
-    public ArrayList<String> getWords(String text) {
+    private ArrayList<String> getWords(String text) {
         JiebaTools jiebaTools = new JiebaTools();
         ArrayList<String> result;
         try {
@@ -62,7 +59,7 @@ public class SemanticUilt implements TextConstants {
         return result;
     }
 
-    public ArrayList<String> getTextSemantic(String text) {
+    private ArrayList<String> getTextSemantic(String text) {
         ArrayList<String> wordList = getWords(text);
         ArrayList<String> fileClasses = new ArrayList<>();
         for (String word: wordList){
@@ -75,7 +72,7 @@ public class SemanticUilt implements TextConstants {
         return fileClasses;
     }
 
-    public ArrayList<String> getSemanticWords(String text) {
+    private ArrayList<String> getSemanticWords(String text) {
         ArrayList<String> wordList = getWords(text);
         ArrayList<String> fileWords = new ArrayList<>();
         for (String word: wordList){
@@ -89,31 +86,23 @@ public class SemanticUilt implements TextConstants {
     }
 
 
-    public String detectEncode(byte [] buf, int len){
-        UniversalDetector detector = new UniversalDetector(null);
-        detector.handleData(buf, 0, len);
-        detector.dataEnd();
-        charset_ = detector.getDetectedCharset();
-        return charset_;
-    }
-
-    public ArrayList<String> getFileSemantic(File file) {
+    private ArrayList<String> getFileSemantic(File file) {
         ArrayList<String> fileClasses = new ArrayList<>();
-        String fileLine = readFile(file);
+        String fileLine = fileUilt.readFile(file);
         if (!"".equals(fileLine)) {
             Charset.forName("UTF-8").encode(fileLine);
             fileClasses.addAll(getTextSemantic(fileLine));
             if (ProSetting.KEEP_JIEBA_RESULT) {
-                writeLine( new File(ProSetting.JIEBA_RESULT_PATH+file.getName()) , String.join(" ",getWords(fileLine)));
-                writeLine( new File(ProSetting.JIEBA_RESULT_PATH+file.getName()) , String.join(" ",fileClasses));
+                fileUilt.writeLine( new File(ProSetting.JIEBA_RESULT_PATH+file.getName()) , String.join(" ",getWords(fileLine)));
+                fileUilt.writeLine( new File(ProSetting.JIEBA_RESULT_PATH+file.getName()) , String.join(" ",fileClasses));
             }
         }
         return fileClasses;
     }
 
-    public ArrayList<String> getFileSemanticWords(File file) {
+    private ArrayList<String> getFileSemanticWords(File file) {
         ArrayList<String> fileWords = new ArrayList<>();
-        String fileLine = readFile(file);
+        String fileLine = fileUilt.readFile(file);
         if (!"".equals(fileLine)) {
             Charset.forName("UTF-8").encode(fileLine);
             fileWords.addAll(getSemanticWords(fileLine));
@@ -121,48 +110,22 @@ public class SemanticUilt implements TextConstants {
         return fileWords;
     }
 
-    public String readFile(File file){
-        String fileLine ="";
-        byte[] buf = new byte[4096];
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            int len;
-            while( (len=fis.read(buf,0,buf.length)) != -1) {
-                detectEncode(buf, len);
-                String line = new String(buf,0,len, charset_);
-                fileLine = fileLine.concat(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        return fileLine;
-    }
 
-    public void mkResultPreview(){
+    private void mkResultPreview(){
         File newsFile = new File("/Users/linznin/tmp/20140909-091956483530010-美國掀起穿戴攝影風潮，GoPro、安霸創歷史收盤新高.txt");
         File resultPreview = new File("/Users/linznin/tmp/resultPreview");
         ArrayList<String> fileWords = getFileSemanticWords(newsFile);
         ArrayList<String> fileClasses = getFileSemantic(newsFile);
-        ArrayList<String> word = getWords(readFile(newsFile));
-        SemanticUilt semanticUilt = new SemanticUilt();
-        semanticUilt.writeLine(resultPreview,String.join(" ",fileWords));
-        semanticUilt.writeLine(resultPreview,String.join(" ",fileClasses));
+        ArrayList<String> word = getWords(fileUilt.readFile(newsFile));
+        fileUilt.writeLine(resultPreview,String.join(" ",fileWords));
+        fileUilt.writeLine(resultPreview,String.join(" ",fileClasses));
         System.out.println("size is "+fileClasses.size());
     }
 
-    public void writeLine(File file, String line) {
-        try {
-            FileWriter writer = new FileWriter(file,true);
-            writer.write(line+"\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void csvTitle(ArrayList<String> titles, File csvFile) {
+
+    private void csvTitle(ArrayList<String> titles, File csvFile) {
         String splitMark = ",";
         String csvTitle = "FileName".concat(splitMark);
 
@@ -171,10 +134,10 @@ public class SemanticUilt implements TextConstants {
         }
 
         csvTitle = csvTitle.substring(0,csvTitle.length()-1);
-        writeLine(csvFile,csvTitle);
+        fileUilt.writeLine(csvFile,csvTitle);
     }
 
-    public HashMap<String, HashMap<String,String>> csvContent(HashMap<String, ArrayList<String>> filesClasses,ArrayList<String> titles, File csvFile) {
+    private HashMap<String, HashMap<String,String>> csvContent(HashMap<String, ArrayList<String>> filesClasses, ArrayList<String> titles, File csvFile) {
         HashMap<String,HashMap<String, String>> tmp = new HashMap<>();
         String splitMark = ", ";
         for (String fileName : filesClasses.keySet()) {
@@ -192,7 +155,7 @@ public class SemanticUilt implements TextConstants {
                 content = content.concat(splitMark).concat(featureCount.toString());
                 tmp.put(fileName, frequencymap);
             }
-            writeLine(csvFile, content);
+            fileUilt.writeLine(csvFile, content);
         }
 
         return tmp;

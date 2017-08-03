@@ -1,6 +1,6 @@
 package org.chening.text.lda;
 
-import org.chening.text.semantic.SemanticUilt;
+import org.chening.text.fileUilt.FileUilt;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,7 +17,7 @@ public class LdaSearch {
     public void searchLdaFile(){
         File ldaFile = new File("/Users/linznin/tmp/LDA/result/model-final.tassign");
         File textFile = new File("/Users/linznin/tmp/LDA/result/topicCount");
-        SemanticUilt semanticUilt = new SemanticUilt();
+        FileUilt fileUilt = new FileUilt();
         HashMap<String,Integer>  textTopicMap = new HashMap<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(ldaFile));
@@ -35,7 +35,7 @@ public class LdaSearch {
                     topices[topic] = count;
                 }
                 String countResult = Arrays.toString(topices).replace("[", "").replace("]", "");
-                semanticUilt.writeLine(textFile,countResult);
+                fileUilt.writeLine(textFile,countResult);
 
             }
 

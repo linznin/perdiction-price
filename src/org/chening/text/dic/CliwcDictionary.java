@@ -1,6 +1,6 @@
 package org.chening.text.dic;
 
-import org.chening.text.fileUilt.TextConstants;
+import org.chening.text.semantic.SemanticConstants;
 
 import java.io.*;
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.*;
  * Created by linznin on 2017/2/3.
  *
  */
-public class CliwcDictionary implements TextConstants {
+public class CliwcDictionary implements SemanticConstants {
 
     private File dicFile;
 

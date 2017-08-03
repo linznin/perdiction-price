@@ -1,5 +1,6 @@
 package org.chening.text.core;
 
+import org.chening.text.jieba.JiebaTools;
 import org.chening.text.pso.PSODriver;
 import org.chening.text.semantic.SemanticUilt;
 
@@ -17,9 +18,12 @@ public class main {
     private void run(String[] args){
         parse_command_line(args);
         checkSystemPath();
-        if (ProSetting.OPTIMIZATION_FUNCTION.equals(Constants.JIEBA)) {
+        if (ProSetting.OPTIMIZATION_FUNCTION.equals(Constants.SEMANTIC)) {
             new SemanticUilt().execute();
-        } else {
+        } else if (ProSetting.OPTIMIZATION_FUNCTION.equals(Constants.JIEBA)){
+            new JiebaTools().jiebaSeq();
+        }
+        else {
             new PSODriver().run();
         }
     }
@@ -28,6 +32,10 @@ public class main {
         File file = new File(ProSetting.ORG_PATH);
         if (!file.exists()){
             System.err.print("Wrong system path!\n");
+            System.exit(1);
+        }
+        if (ProSetting.OPTIMIZATION_FUNCTION.equals(Constants.JIEBA) && !file.isFile()){
+            System.err.print("This is not a file!\n");
             System.exit(1);
         }
         ProSetting.genPath();
@@ -56,7 +64,11 @@ public class main {
     }
 
     private String checkFunction(String arg) {
-        if (arg.equals(Constants.OPTIMIZATION_LDA) || arg.equals(Constants.OPTIMIZATION_LDA_SEMANTIC) || arg.equals(Constants.OPTIMIZATION_SEMANTIC) || arg.equals(Constants.JIEBA) )
+        if (arg.equals(Constants.OPTIMIZATION_LDA) ||
+                arg.equals(Constants.OPTIMIZATION_LDA_SEMANTIC) ||
+                arg.equals(Constants.OPTIMIZATION_SEMANTIC) ||
+                arg.equals(Constants.SEMANTIC) ||
+                arg.equals(Constants.JIEBA))
             return arg;
         else
             exit_with_help();
@@ -68,11 +80,12 @@ public class main {
         System.out.print(
                 "Usage:  [options] [system path]\n"
                         +"options:\n"
-                        +"-f funection_type : set type of function(default 0)\n"
+                        +"-f function_type : set type of function(default 0)\n"
                         +"	0 -- LDA & Semantic optimization\n"
                         +"	1 -- LDA optimization\n"
                         +"	2 -- Semantic optimization\n"
                         +"	3 -- Semantic analytics \n"
+                        +"	4 -- jieba tools , give [system path] as file\n"
         );
         System.exit(1);
     }

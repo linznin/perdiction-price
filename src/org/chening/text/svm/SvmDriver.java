@@ -1,11 +1,11 @@
 package org.chening.text.svm;
 
-import org.chening.text.fileUilt.TextConstants;
+import org.chening.text.semantic.SemanticConstants;
 
 import java.io.File;
 import java.io.IOException;
 
-public class SvmDriver implements TextConstants{
+public class SvmDriver implements SemanticConstants {
 
     public final String nr_fold = "10";
 

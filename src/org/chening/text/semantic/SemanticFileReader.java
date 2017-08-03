@@ -1,6 +1,6 @@
-package org.chening.text.fileUilt;
+package org.chening.text.semantic;
 
-import org.chening.text.semantic.SemanticUilt;
+import org.chening.text.fileUilt.FileUilt;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,7 +35,7 @@ public class SemanticFileReader {
     private void readSemanticFile(File org_file){
         try
         {
-            SemanticUilt semanticUilt = new SemanticUilt();
+            FileUilt fileUilt = new FileUilt();
             File resultCSV = new File("/Users/linznin/tmp/result_csv/"+org_file.getName()+".csv");
             BufferedReader br = new BufferedReader(new FileReader(org_file));
             String line;
@@ -47,7 +47,7 @@ public class SemanticFileReader {
                 for (int i=1;i<8;i++){
                     semanticCount.add(row[featureSize+i]);
                 }
-                semanticUilt.writeLine(resultCSV,stackMark+","+String.join(",",semanticCount));
+                fileUilt.writeLine(resultCSV,stackMark+","+String.join(",",semanticCount));
             }
             br.close();
         } catch (IOException e) {

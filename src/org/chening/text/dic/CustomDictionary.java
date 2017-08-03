@@ -1,6 +1,6 @@
 package org.chening.text.dic;
 
-import org.chening.text.fileUilt.TextConstants;
+import org.chening.text.semantic.SemanticConstants;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,7 +14,7 @@ import java.util.HashMap;
  * 為了符合自定義字典
  * 並且預期字典為多個檔案存放入同一字典目錄
  */
-public class CustomDictionary implements TextConstants {
+public class CustomDictionary implements SemanticConstants {
 
     HashMap<String ,ArrayList<String>> dicMach = new HashMap<>();
 

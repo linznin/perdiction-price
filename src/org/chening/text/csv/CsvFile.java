@@ -2,8 +2,8 @@ package org.chening.text.csv;
 
 import org.chening.text.core.ProSetting;
 import org.chening.text.dao.LdaDao;
+import org.chening.text.fileUilt.FileUilt;
 import org.chening.text.model.*;
-import org.chening.text.semantic.SemanticUilt;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class CsvFile {
 
-    SemanticUilt semanticUilt = new SemanticUilt();
+    FileUilt fileUilt = new FileUilt();
 
     public String genRowData(String path,String fileName){
         try (BufferedReader br = new BufferedReader(new FileReader(path+fileName)))
@@ -187,7 +187,7 @@ public class CsvFile {
         result.add((w));
         result.add(correct);
         result.add(location);
-        semanticUilt.writeLine(new File(ProSetting.PSO_RESULT_CSV),result.toString());
+        fileUilt.writeLine(new File(ProSetting.PSO_RESULT_CSV),result.toString());
     }
 
     public void genCSVmapping(){

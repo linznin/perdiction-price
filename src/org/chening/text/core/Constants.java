@@ -7,5 +7,6 @@ public class Constants {
     public static final String OPTIMIZATION_LDA_SEMANTIC = "0";
     public static final String OPTIMIZATION_LDA = "1";
     public static final String OPTIMIZATION_SEMANTIC = "2";
-    public static final String JIEBA = "3";
+    public static final String SEMANTIC = "3";
+    public static final String JIEBA = "4";
 }

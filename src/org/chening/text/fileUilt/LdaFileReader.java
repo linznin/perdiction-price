@@ -33,7 +33,7 @@ public class LdaFileReader {
     private void readLdaFile(File org_file){
         try
         {
-            SemanticUilt semanticUilt = new SemanticUilt();
+            FileUilt fileUilt = new FileUilt();
             File resultCSV = new File("/Users/linznin/tmp/result_csv/"+org_file.getName());
             BufferedReader br = new BufferedReader(new FileReader(org_file));
             String line;
@@ -52,7 +52,7 @@ public class LdaFileReader {
                         selectFeatrues.add("T"+index);
                     }
                 }
-                semanticUilt.writeLine(resultCSV,fileName+","+accury+","+gamma+","+cost+","+String.join(";",selectFeatrues));
+                fileUilt.writeLine(resultCSV,fileName+","+accury+","+gamma+","+cost+","+String.join(";",selectFeatrues));
             }
             br.close();
         } catch (IOException e) {
@@ -76,11 +76,11 @@ public class LdaFileReader {
                 textLine.add(i,text);
                 i++;
             }
-            SemanticUilt semanticUilt = new SemanticUilt();
+            FileUilt fileUilt = new FileUilt();
 
-            semanticUilt.writeLine(trainFile,i+"");
+            fileUilt.writeLine(trainFile,i+"");
             for (String text: textLine) {
-                semanticUilt.writeLine(trainFile,text);
+                fileUilt.writeLine(trainFile,text);
             }
 
 
@@ -92,7 +92,7 @@ public class LdaFileReader {
     public void mkTextPatant() {
         File file = new File("/Users/linznin/tmp/resultPreview");
         File trainFile= new File("/Users/linznin/tmp/textcombine.fin");
-        SemanticUilt semanticUilt = new SemanticUilt();
+        FileUilt fileUilt = new FileUilt();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
@@ -109,7 +109,7 @@ public class LdaFileReader {
                     }
 
                     if ((i+1)%10==0 || i+1==word.length){
-                        semanticUilt.writeLine(trainFile,tmp);
+                        fileUilt.writeLine(trainFile,tmp);
                         tmp="";
                     }
                 }
