@@ -1,35 +1,79 @@
 package org.chening.text.core;
 
-import org.gandhim.csv.CsvFile;
+import org.chening.text.pso.PSODriver;
+import org.chening.text.semantic.SemanticUilt;
 
 import java.io.File;
 
 /**
  * Created by linznin on 2017/3/25.
  */
-public class main implements Constants{
+public class main {
 
     public static void main(String[] args) {
-//        new main().scanFolder(new File(ORG_PATH+"/tmp"));
-//        new CsvFile().sematictodb();
-        new CsvFile().genData();
-
+        new main().run(args);
     }
 
-    private static void scanFolder(File Path) {
-        try {
-            for (final File fileEntry : Path.listFiles()) {
-                if (!fileEntry.isHidden()) {
-                    if (fileEntry.isDirectory()) {
-                        scanFolder(fileEntry);
-                    } else {
-                        System.out.println("Path = [" + fileEntry.getParentFile().getName() + "]");
-                        new CsvFile().csvtodb(fileEntry);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void run(String[] args){
+        parse_command_line(args);
+        checkSystemPath();
+        if (ProSetting.OPTIMIZATION_FUNCTION.equals(Constants.JIEBA)) {
+            new SemanticUilt().execute();
+        } else {
+            new PSODriver().run();
         }
+    }
+
+    private void checkSystemPath() {
+        File file = new File(ProSetting.ORG_PATH);
+        if (!file.exists()){
+            System.err.print("Wrong system path!\n");
+            System.exit(1);
+        }
+        ProSetting.genPath();
+    }
+
+    private void parse_command_line(String[] args){
+        int i;
+        for(i=0;i<args.length;i++) {
+            if (args[i].charAt(0) != '-') break;
+            if (++i >= args.length)
+                exit_with_help();
+            switch (args[i - 1].charAt(1)) {
+                case 'f':
+                    ProSetting.OPTIMIZATION_FUNCTION = checkFunction(args[i]);
+                    break;
+                case 'h':
+                    exit_with_help();
+                    break;
+                default:
+                    System.err.print("Unknown option: " + args[i - 1] + "\n");
+                    exit_with_help();
+            }
+        }
+        if (args.length>i)
+            ProSetting.ORG_PATH = args[i];
+    }
+
+    private String checkFunction(String arg) {
+        if (arg.equals(Constants.OPTIMIZATION_LDA) || arg.equals(Constants.OPTIMIZATION_LDA_SEMANTIC) || arg.equals(Constants.OPTIMIZATION_SEMANTIC) || arg.equals(Constants.JIEBA) )
+            return arg;
+        else
+            exit_with_help();
+        return "";
+    }
+
+    private static void exit_with_help()
+    {
+        System.out.print(
+                "Usage:  [options] [system path]\n"
+                        +"options:\n"
+                        +"-f funection_type : set type of function(default 0)\n"
+                        +"	0 -- LDA & Semantic optimization\n"
+                        +"	1 -- LDA optimization\n"
+                        +"	2 -- Semantic optimization\n"
+                        +"	3 -- Semantic analytics \n"
+        );
+        System.exit(1);
     }
 }

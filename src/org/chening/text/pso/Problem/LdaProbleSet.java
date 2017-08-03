@@ -1,24 +1,22 @@
-package org.gandhim.pso.Problem;
+package org.chening.text.pso.Problem;
 
 import java.io.*;
 
 /**
- * Created by linznin on 2017/3/28.
+ * Created by linznin on 2017/8/1.
  */
-public class SemanticFetureProblemSet extends ProblemSet {
-
-    public SemanticFetureProblemSet(){}
-
-    public SemanticFetureProblemSet(String org_path,int dimension){
-        this.org_path = org_path;
-        this.problem_dimension = dimension;
-    }
-
-    protected String makeTrainData(boolean[] features,String path){
+public class LdaProbleSet {
+    /**
+     * makeTrainData
+     * @param features 每個LDA特徵是否取用
+     * @param path 來源資料位置
+     * @return
+     */
+    public String makeTrainData(boolean[] features,String path, String trainPath){
         // 測試資料格式 <class> <lable>:<value> <lable>:<value>
         //trainData = org_path+".t";
         File org_data = new File(path);
-        String trainData = TRAIN_PATH+org_data.getName()+".t";
+        String trainData = trainPath+org_data.getName()+".t";
         try (BufferedReader br = new BufferedReader(new FileReader(org_data)))
         {
             String rowData = "";
@@ -32,7 +30,7 @@ public class SemanticFetureProblemSet extends ProblemSet {
                 // 將不必要之feature 去除
                 int index = 1;
                 for (int i=1;i<row.length;i++){
-                    //將 lable 編號 與 feactures 對應 並依照feactures結果選入特徵
+                    //將 lable 編號 與 解碼後feactures 對應 並依照feactures結果選入特徵
                     String[] topicValue = row[i].split(":");
                     if(features[Integer.parseInt(topicValue[0])-1]){
                         rowData += " "+index+":"+topicValue[1];
@@ -40,8 +38,7 @@ public class SemanticFetureProblemSet extends ProblemSet {
                     }
                 }
 
-
-//                writer.println(rowData);
+                writer.println(rowData);
             }
             writer.flush();
             writer.close();
